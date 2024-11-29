@@ -1,5 +1,3 @@
-# Welcome to my super cool website!
+# Lines in a Landscape
 
-Here you will find articles I write about stuff.
-
-VERSION 2
+Placeholder for personal website

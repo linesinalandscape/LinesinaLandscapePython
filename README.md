@@ -1,4 +1,5 @@
-<img align="left" src=".github/readme_assets/icon.png" alt="logo">
+# Static site generator for my blog and personal website
+Adapted from [Simple Custom SSG Template](https://github.com/TechnicJelle/SimpleCustomSSGTemplate)
 
 # Simple Custom SSG Template
 This is a template project that you can use as a base for your own website,
@@ -23,17 +24,3 @@ Contains the static files that will be copied to the build folder.
 
 ### templates
 Contains the HTML templates that will be used to generate the static site from.
-
-## Using this template
-1. Click the green `Use this template` button in the top right and `Create a new repository`
-2. Choose a descriptive repository name, like "My-Cool-Website" or something, and optionally fill in the description
-3. Click the green `Create repository` button in the bottom right
-4. Once it's done, go to the `Settings` tab on the top
-5. Go to the `Pages` section in the side bar on the left
-6. Underneath **Build and deployment**, click the `Source` dropdown, and choose `GitHub Actions`
-7. Scroll down a bit, and enable the `Enforce HTTPS` checkbox
-8. Now go to the `Actions` tab on the top, and then go to the `Build` section in the side bar on the left
-9. Click the `Run workflow` dropdown on the right, verify that it says "`Branch: main`", and then click the green `Run workflow` button
-10. After a few seconds, a new entry called "Build" should show up. Click that
-11. After another few seconds, the yellow circle should become a green checkmark
-12. The link to your website should show up now!

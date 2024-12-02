@@ -1,0 +1,4 @@
+Sitemap: https://linesinalandscape.com/sitemap.xml
+User-agent: *
+Allow: /
+

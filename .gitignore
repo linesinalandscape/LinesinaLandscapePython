@@ -5,6 +5,4 @@
 # Ignore editor-specific files
 .vscode/
 # Ignore output
-output*/
-# ignore jupyter checkpoints
-.ipynb_checkpoints/
+build/

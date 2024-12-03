@@ -1,4 +1,19 @@
-from shutil import copytree
+'''
+TODO
+- remove jekyll from footer
+- navigation
+- aria-current?
+- paths for canonical and feed
+- add feed
+- add sitemap
+- blog index page
+- reorganise images
+- validate html
+- check performance
+- tags?
+- image lazy loading, size?
+'''
+from shutil import copytree, rmtree
 
 import markdown
 import os
@@ -6,44 +21,59 @@ import os
 SOURCE_DIR = 'content/'
 BUILD_DIR = 'build/'
 
-# == Copy all contents to the build directory ==
-copytree(SOURCE_DIR, BUILD_DIR, dirs_exist_ok=True)
+# sitewide metadata for use in the template
+SITE_META = {
+    'site_url': '',
+    'site_title': 'Lines in a Landscape',
+    'site_author': 'Alan Grant'
+}
 
-# == Load the template and content ==
-template: str
-content: str
+# Empty build directory and copy all contents
+rmtree(BUILD_DIR)
+copytree(SOURCE_DIR, BUILD_DIR)
 
+# Load the template
 with open("templates/default.html") as file:
     template = file.read()
 
-# make a list of files with .md extension in the build directory and subfolders with their full path
+# make a list of files with .md extension in the build directory and subfolders 
 md_files = [os.path.join(dp, f) for dp, dn, filenames in os.walk(
     BUILD_DIR) for f in filenames if f.endswith('.md')]
 
 print('Writing HTML files converted from markdown...')
 
 for f in md_files:
-	with open(f, encoding='utf-8') as file:
-		content = file.read()
+    with open(f, encoding='utf-8') as file:
+        content = file.read()
 
-	# == Convert the markdown to HTML and store metadata ==
-	md = markdown.Markdown(extensions=["meta"])
-	html = md.convert(content)
-	
-	# == Insert the HTML content into the template ==
-	output: str = template.replace('{{ content }}', html)
-	output = output.replace('index.md', '\\')
-		
-	# set output file name replacing .md with .html
-	output_file = f.replace('.md', '.html')
+    # Convert the markdown to HTML and store metadata
+    md = markdown.Markdown(extensions=["meta"])
+    html = md.convert(content)
 
-	# == Write the output to the build directory ==
-	with open(output_file, "w", encoding='utf-8') as file:
-		file.write(output)
+    # Insert the HTML content into the template
+    output: str = template.replace('{{ content }}', html)
 
-	# == Remove the markdown file ==
-	os.remove(f)
+    # insert the site metadata into the template
+    for key in SITE_META:
+        output = output.replace('{{ ' + key + ' }}', SITE_META.get(key))
 
-	print(output_file)
+    # insert the page metadata into the template
+    for key in md.Meta:
+        output = output.replace('{{ ' + key + ' }}', md.Meta.get(key)[0])
+
+    # reformat internal links
+    output = output.replace('\index.md', '/')
+
+    # set output file name replacing .md with .html
+    output_file = f.replace('.md', '.html')
+
+    # == Write the output to the build directory ==
+    with open(output_file, "w", encoding='utf-8') as file:
+        file.write(output)
+
+    # == Remove the markdown file ==
+    os.remove(f)
+
+    print(output_file)
 
 print('Site generation finished')

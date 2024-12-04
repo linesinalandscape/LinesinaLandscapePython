@@ -7,12 +7,14 @@ TODO
 - add feed
 - add sitemap
 - blog index page
+- OG images
 - reorganise images
 - validate html
 - check performance
 - tags?
 - image lazy loading, size?
 '''
+
 from shutil import copytree, rmtree
 
 import markdown
@@ -29,14 +31,14 @@ SITE_META = {
 }
 
 # Empty build directory and copy all contents
-rmtree(BUILD_DIR)
+rmtree(BUILD_DIR, ignore_errors=True)
 copytree(SOURCE_DIR, BUILD_DIR)
 
 # Load the template
 with open("templates/default.html") as file:
     template = file.read()
 
-# make a list of files with .md extension in the build directory and subfolders 
+# make a list of files with .md extension in the build directory and subfolders
 md_files = [os.path.join(dp, f) for dp, dn, filenames in os.walk(
     BUILD_DIR) for f in filenames if f.endswith('.md')]
 

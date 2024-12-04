@@ -1,50 +1,74 @@
 <!doctype html>
 <html lang="en-GB">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- sitewide metadata -->
-    <link rel="stylesheet" href="/assets/css/simple.min.css">
-    <link rel="stylesheet" href="/assets/css/custom.css">
-    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="{{ site_title }}" /> <!-- TODO -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta property="og:locale" content="en_GB" />
-    <meta property="og:site_name" content="{{ site_title }}" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="author" content="{{ site_author }}" />
-    <meta name="fediverse:creator" content="@alan@en.osm.town">
-    <!-- page metadata -->
-    <title>{{ title }}</title>
-    <meta property="og:title" content="{{ title }}" />
-    <meta property="twitter:title" content="{{ title }}" />
-    <meta name="description" content="{{ description }}" />
-    <meta property="og:description" content="{{ description }}" />
-    <script type="application/ld+json">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- sitewide metadata -->
+  <link rel="stylesheet" href="/assets/css/simple.min.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="{{ site_title }}" />
+  <!-- TODO -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:site_name" content="{{ site_title }}" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="author" content="{{ site_author }}" />
+  <meta name="fediverse:creator" content="@alan@en.osm.town">
+  <!-- page metadata -->
+  <title>{{ title }}</title>
+  <meta property="og:title" content="{{ title }}" />
+  <meta property="twitter:title" content="{{ title }}" />
+  <meta name="description" content="{{ description }}" />
+  <meta property="og:description" content="{{ description }}" />
+  <script type="application/ld+json">
       {"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"{{ site_author }}"},"description":"{{ description }}","headline":"{{ title }}","name":"{{ title }}","url":"http://localhost:4000/"}
     </script>
-    <link rel="canonical" href="http://localhost:4000/" /> <!-- TODO -->
-  </head>
-  <body>
-      <header>
-          <p class="headername">"{{ site_title }}"</p>
-      
-      </header>
-      <main>
-        {{ content }}
-      </main>
+  <link rel="canonical" href="http://localhost:4000/" /> <!-- TODO -->
+</head>
 
-      <footer>     
-         <p><img src= "/assets/images/rss-icon.png" width=24 height=24 alt="">Subscribe to the <a href="/feed.xml">feed</a> for site updates</p>
-         <p><img src= "/assets/images/fediverse-logo.png" width=24 height=24 alt=""><img src= "/assets/images/mastodon-logo.ico" width=16 height=16 alt="">Follow me on <a rel="me" href="https://en.osm.town/@alan">Mastodon</a> with any Fediverse account</p>
-         <p><img src= "/assets/images/purple-mail-icon.webp" width=24 height=24 alt="">Email me at alan [at] linesinalandscape [dot] com </p>
-         <p><img src= "/assets/images/html-code-icon.webp" width=24 height=24 alt=""><img src= "/assets/images/css-code-icon.webp" width=24 height=24 alt="">Site made with <a href="https://jekyllrb.com">Jekyll</a> and slightly customised <a href="https://simplecss.org">Simple.css</a></p>      
-         <p><img src= "/assets/images/cc.svg" width=24 height=24 alt=""><img src= "/assets/images/by.svg" width=24 height=24 alt="">All text and photos by Alan Grant, licensed under <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY 4.0</a></p> 
-      </footer>
-  </body>
- </html>
+<body>
+  <header>
+    <p class="headername">"{{ site_title }}"</p>
+    <nav>
+      <!-- <a href="/" aria-current="page">Home</a> -->
+      <a href="/">Home</a> 
+      <a href="/blog/">Blog</a>
+      <a href="/links/">Links</a>
+      <a href="/about/">About</a>
+    </nav>
+    <nav>
+      <a href="/stations-in-the-south/">Stations in the South</a>
+      <a href="/walks/">Walks</a>
+      <a href="/maps/">Maps</a>
+    </nav>
+  </header>
 
+  <main>
+    {{ content }}
+  </main>
 
+  <footer>
+    <p><img src="/assets/images/rss-icon.png" width=24 height=24 alt="">Subscribe to the <a href="/feed.xml">feed</a>
+      for site updates</p>
+    <p><img src="/assets/images/fediverse-logo.png" width=24 height=24 alt=""><img
+        src="/assets/images/mastodon-logo.ico" width=16 height=16 alt="">Follow me on <a rel="me"
+        href="https://en.osm.town/@alan">Mastodon</a> with any Fediverse account</p>
+    <p><img src="/assets/images/purple-mail-icon.webp" width=24 height=24 alt="">Email me at alan [at] linesinalandscape
+      [dot] com </p>
+    <p><img src="/assets/images/html-code-icon.webp" width=24 height=24 alt=""><img
+        src="/assets/images/css-code-icon.webp" width=24 height=24 alt="">Site made with <a
+        href="https://jekyllrb.com">Jekyll</a> and slightly customised <a href="https://simplecss.org">Simple.css</a>
+    </p>
+    <p><img src="/assets/images/cc.svg" width=24 height=24 alt=""><img src="/assets/images/by.svg" width=24 height=24
+        alt="">All text and photos by Alan Grant, licensed under <a
+        href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank"
+        rel="license noopener noreferrer" style="display:inline-block;">CC BY 4.0</a></p>
+  </footer>
+</body>
+
+</html>

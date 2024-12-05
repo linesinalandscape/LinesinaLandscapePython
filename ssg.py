@@ -70,7 +70,7 @@ for md_file in md_files:
                  + str(md_file.relative_to(BUILD_DIR).parent) + '/')
     permalink = permalink.replace('\\', '/')
     permalink = permalink.replace('./', '')  # for root index page
-    page_meta['permalink'] = permalink
+    page_meta['permalink'] = [permalink]
 
     # set date for the page in priority order:
     # date updated in metadata, date in metadata, file modified date
@@ -83,7 +83,9 @@ for md_file in md_files:
     # elif page_meta.get('date'):
     #    date_final = page_meta.get('date')[0]
     # page_meta['date_final'] = date_final
-
+    date_final = dt.datetime.now().strftime('%Y-%m-%d') # TODO FIX
+    page_meta['date_final'] = [date_final]
+    
     # insert the site metadata into the template
     for key in SITE_META:
         output = output.replace('{{ ' + key + ' }}', SITE_META.get(key))

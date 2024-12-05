@@ -28,12 +28,12 @@
   <script type="application/ld+json">
       {"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"{{ site_author }}"},"description":"{{ description }}","headline":"{{ title }}","name":"{{ title }}","url":"http://localhost:4000/"}
     </script>
-  <link rel="canonical" href="http://localhost:4000/" /> <!-- TODO -->
+  <link rel="canonical" href="{{ permalink }}" /> 
 </head>
 
 <body>
   <header>
-    <p class="headername">"{{ site_title }}"</p>
+    <p class="headername">{{ site_title }}</p>
     <nav>
       <!-- <a href="/" aria-current="page">Home</a> -->
       <a href="/">Home</a> 

@@ -1,12 +1,12 @@
 '''
 TODO
 - 404
+- production permalinks
 - remove jekyll from footer
-- navigation
 - aria-current?
-- paths for canonical and feed
+- paths for feed
 - add feed
-- add sitemap
+- add sitemap and path
 - blog index page
 - OG images
 - reorganise images
@@ -26,7 +26,7 @@ TEMPLATE_FILE = Path('templates/default.html')
 
 # sitewide metadata for use in the template
 SITE_META = {
-    'site_url': '',
+    'site_url': 'http://localhost:8000/',
     'site_title': 'Lines in a Landscape',
     'site_author': 'Alan Grant'
 }
@@ -45,12 +45,22 @@ print('Writing HTML files converted from markdown...')
 
 for md_file in md_files:
 
+    # set the final url for the page
+    permalink = (SITE_META.get('site_url')
+                 + str(md_file.relative_to(BUILD_DIR).parent) + '/')
+    permalink = permalink.replace('\\', '/')
+    permalink = permalink.replace('./', '') # for root index page
+    
     # read the markdown file
     content = md_file.read_text(encoding='utf-8')
 
     # Convert the markdown to HTML and store metadata
     md = markdown.Markdown(extensions=["meta"])
     html = md.convert(content)
+    page_meta = md.Meta
+    
+    # add permalink to page:meta
+    page_meta['permalink'] = [permalink]
 
     # Insert the HTML content into the template
     output = template.replace('{{ content }}', html)
@@ -61,7 +71,7 @@ for md_file in md_files:
 
     # insert the page metadata into the template
     for key in md.Meta:
-        output = output.replace('{{ ' + key + ' }}', md.Meta.get(key)[0])
+        output = output.replace('{{ ' + key + ' }}', page_meta.get(key)[0])
 
     # reformat internal links
     output = output.replace('\index.md', '/')

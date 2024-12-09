@@ -1,13 +1,14 @@
 '''
 TODO
-- all date related stuff 
+- post titles 
+- all date related stuff
+- markdown2 in github
 - 404
 - production permalinks
 - remove jekyll from footer
 - aria-current?
 - paths for feed
 - add feed
-- add sitemap and path
 - blog index page
 - OG images
 - reorganise images
@@ -20,7 +21,7 @@ TODO
 from shutil import copytree, rmtree
 from pathlib import Path
 import datetime as dt
-import markdown
+from markdown2 import markdown
 
 SOURCE_DIR = Path('content')
 BUILD_DIR = Path('build')
@@ -52,49 +53,43 @@ sitemap_items = ''
 print('Writing HTML files converted from markdown...')
 
 for md_file in md_files:
-    
+
     # read the markdown file
     content = md_file.read_text(encoding='utf-8')
 
     # Convert the markdown to HTML and store metadata
-    md = markdown.Markdown(extensions=["meta"])
-    html = md.convert(content)
-    page_meta = md.Meta
+    html = markdown(content, extras=['metadata'])
+    page_meta = html.metadata
 
     # Insert the HTML content into the template
     output = layout_html.replace('{{ content }}', html)
+    sitemap_item = layout_sitemap_item
 
-    # various metadata fields not already in the markdown file 
+    # various metadata fields not already in the markdown file
     # set the final url for the page
     permalink = (SITE_META.get('site_url')
                  + str(md_file.relative_to(BUILD_DIR).parent) + '/')
     permalink = permalink.replace('\\', '/')
     permalink = permalink.replace('./', '')  # for root index page
-    page_meta['permalink'] = [permalink]
+    page_meta['permalink'] = permalink
 
     # set date for the page in priority order:
-    # date updated in metadata, date in metadata, file modified date
-    #date_file = dt.datetime.fromtimestamp(md_file.stat().st_mtime)
-    # convert to human readable date in format YYYY-MM-DD
-    # date_final = dt.datetime.strptime(date_file, '%Y-%m-%d')
-    #    date_final = ''
-    # if page_meta.get('date_updated'):
-    #    date_final = page_meta.get('date_updated')[0]
-    # elif page_meta.get('date'):
-    #    date_final = page_meta.get('date')[0]
-    # page_meta['date_final'] = date_final
-    date_final = dt.datetime.now().strftime('%Y-%m-%d') # TODO FIX
-    page_meta['date_final'] = [date_final]
-    
+    # TODO FIX THIS
+    page_meta['date_final'] = '2024-12-01'
+
     # insert the site metadata into the template
     for key in SITE_META:
         output = output.replace('{{ ' + key + ' }}', SITE_META.get(key))
 
     # insert the page metadata into the templates
-    for key in md.Meta:
-        output = output.replace('{{ ' + key + ' }}', page_meta.get(key)[0])
-        sitemap_item = (layout_sitemap_item.replace('{{ ' + key + ' }}',
-                                                      page_meta.get(key)[0]))
+    # exclude if not a string TODO sort out images in metadata
+    keys = [key for key in page_meta if type(page_meta[key]) == str]
+    for key in keys:
+        output = output.replace('{{ ' + key + ' }}', page_meta.get(key))
+        target = '{{ ' + key + ' }}'
+        input = page_meta.get(key)
+        sitemap_item = (sitemap_item.replace('{{ ' + key + ' }}',
+                                             page_meta.get(key)))
 
     # reformat internal links
     output = output.replace('\index.md', '/')

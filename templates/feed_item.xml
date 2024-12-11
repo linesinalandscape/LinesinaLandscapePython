@@ -1,0 +1,14 @@
+<entry>
+<title type="html">{{ title }}</title>
+<link href="{{ permalink }}" rel="alternate" type="text/html" title="{{ title }}" />
+<published>{{ date_final }}</published>
+<updated>2024-05-14T00:00:00+01:00</updated>
+<id>{{ permalink }}</id>
+<content type="html">
+<![CDATA[{{ content }}]]>
+</content>
+<author><name>{{ site_author }}</name></author>
+<summary type="html">
+<![CDATA[{{ description }}]]>
+</summary>
+</entry>

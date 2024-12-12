@@ -27,13 +27,18 @@ SOURCE_DIR = Path('content')
 BUILD_DIR = Path('build')
 SITEMAP = Path('build/sitemap.xml')
 FEED = Path('build/feed.xml')
-TEMPLATE_HTML = Path('templates/default.html')
-TEMPLATE_SITEMAP = Path('templates/sitemap.xml')
-TEMPLATE_SITEMAP_ITEM = Path('templates/sitemap_item.xml')
-TEMPLATE_FEED = Path('templates/feed.xml')
-TEMPLATE_FEED_ITEM = Path('templates/feed_item.xml')
+POST_INDEX = Path('build/blog/index.html')
+FILE_404 = Path('build/404.html')
 
-# sitewide metadata for use in the template
+TEMPLATES = {
+    'html': Path('templates/default.html'),
+    'sitemap': Path('templates/sitemap.xml'),
+    'sitemap_item': Path('templates/sitemap_item.xml'),
+    'feed': Path('templates/feed.xml'),
+    'feed_item': Path('templates/feed_item.xml'),
+    'file_404': Path('templates/404.html')
+}
+
 SITE_META = {
     'site_url': 'http://localhost:8000/',
     'site_title': 'Lines in a Landscape',
@@ -41,107 +46,147 @@ SITE_META = {
     'site_description': 'Trails, trains, maps, Málaga, and more - a personal website'
 }
 
-# Empty build directory and copy all contents
-rmtree(BUILD_DIR, ignore_errors=True)
-copytree(SOURCE_DIR, BUILD_DIR)
 
-# Load the layout templates
-layout_html = TEMPLATE_HTML.read_text(encoding='utf-8')
-layout_sitemap = TEMPLATE_SITEMAP.read_text(encoding='utf-8')
-layout_sitemap_item = TEMPLATE_SITEMAP_ITEM.read_text(encoding='utf-8')
-layout_feed = TEMPLATE_FEED.read_text(encoding='utf-8')
-layout_feed_item = TEMPLATE_FEED_ITEM.read_text(encoding='utf-8')
+def write_file(path, content):
+    ''' Write content to a file '''
+    path.write_text(content, encoding='utf-8')
+    print('File created:', path)
 
-# make a list of files with .md extension in the build directory and subfolders
-files = list(BUILD_DIR.rglob('*.md'))
 
-sitemap_items = ''
-feed_items = ''
+def prepare_dirs():
+    ''' Empty build directory and copy all contents '''
+    rmtree(BUILD_DIR, ignore_errors=True)
+    copytree(SOURCE_DIR, BUILD_DIR)
 
-print('Writing HTML files converted from Markdown...')
 
-for file in files:
+def load_layouts():
+    ''' Load the layout templates into a dictionary '''
+    layouts = {}
+    for key in TEMPLATES:
+        layouts[key] = TEMPLATES[key].read_text(encoding='utf-8')
+    return layouts
 
-    # set flag for blog post if file is in subfolder of 'blog'
-    is_post = ('blog' in str(file.parent)
-               and not str(file.parent).endswith('blog'))
 
-    # read the markdown file
-    content = file.read_text(encoding='utf-8')
+def get_md_data():
+    ''' read markdown content and metadata into a list of dictionaries '''
+    md_data = []
 
-    # Convert markdown to HTML and store metadata
-    html = markdown(content, extras=['metadata'])
-    page_meta = html.metadata
+    # make a list of files with .md extension
+    files = list(BUILD_DIR.rglob('*.md'))
 
-    # Insert the HTML content into the templates
-    output = layout_html.replace('{{ content }}', html)
-    sitemap_item = layout_sitemap_item
-    if is_post:
-        feed_item = layout_feed_item.replace('{{ content }}', html)
-    else:
-        feed_item = ''
+    for file in files:
+        # collect all required data for each markdown file
+        file_data = {}
+        file_data.update(SITE_META)
+        file_data['path'] = file
 
-    # various metadata fields not already in the markdown file
-    # set the final url for the page
-    permalink = (SITE_META.get('site_url')
-                 + str(file.relative_to(BUILD_DIR).parent) + '/')
-    permalink = permalink.replace('\\', '/')
-    permalink = permalink.replace('./', '')  # for root index page
-    page_meta['permalink'] = permalink
+        # set flag for blog post if file is in subfolder of 'blog'
+        file_data['is_post'] = ('blog' in str(file.parent)
+                                and not str(file.parent).endswith('blog'))
 
-    # set date for the page in priority order:
-    # TODO FIX THIS
-    page_meta['date_final'] = '2024-12-01'
+        # read the markdown file
+        md = file.read_text(encoding='utf-8')
 
-    # insert the site metadata into the templates
+        # Convert markdown to HTML and store metadata
+        md_converted = markdown(md, extras=['metadata'])
+        file_data['content'] = str(md_converted)
+        file_data.update(md_converted.metadata)
+
+        # various metadata fields not already in the markdown file
+        # set the final url for the page
+        permalink = (SITE_META.get('site_url')
+                     + str(file.relative_to(BUILD_DIR).parent) + '/')
+        permalink = permalink.replace('\\', '/')
+        permalink = permalink.replace('./', '')  # for root index page
+        file_data['permalink'] = permalink
+
+        # set date for the page in priority order:
+        # TODO FIX THIS
+        file_data['date_final'] = '2024-12-01'
+
+        md_data.append(file_data)
+
+        # Remove the markdown file
+        file.unlink()
+
+    return md_data
+
+
+def process_md_data(md_files):
+    ''' Process the markdown data '''
+
+    sitemap_items = ''
+    feed_items = ''
+
+    layouts = load_layouts()
+
+    for md_data in md_files:
+        output = layouts['html']
+        sitemap_item = layouts['sitemap_item']
+        if md_data['is_post']:
+            feed_item = layouts['feed_item']
+        else:
+            feed_item = ''
+
+        # insert the page metadata into the templates
+        # exclude if not a string for now
+        keys = [key for key in md_data if type(md_data[key]) == str]
+        for key in keys:
+            output = output.replace('{{ ' + key + ' }}', md_data.get(key))
+            sitemap_item = (sitemap_item.replace('{{ ' + key + ' }}',
+                                                 md_data.get(key)))
+            if md_data['is_post']:
+                feed_item = (feed_item.replace('{{ ' + key + ' }}',
+                                               md_data.get(key)))
+
+        # reformat internal links
+        output = output.replace('\index.md', '/')
+        feed_item = feed_item.replace('\index.md', '/')
+
+        # set output file name replacing .md with .html
+        output_file = Path(md_data['path'].with_suffix('.html'))
+
+        # Write the output to the build directory
+        write_file(output_file, output)
+
+        # Add the page to the sitemap
+        sitemap_items += sitemap_item
+        feed_items += feed_item
+
+    # generate the blog index page
+    # post_index_text = 'placeholder for post index'
+    # content = POST_INDEX.read_text(encoding='utf-8')
+    # content = content.replace('{{ post_index }}', post_index_text)
+    # POST_INDEX.write_text(content, encoding='utf-8')
+
+    # Generate the sitemap
+    sitemap_output = layouts['sitemap'].replace('{{ content }}', sitemap_items)
+    write_file(SITEMAP, sitemap_output)
+
+    # Generate the feed
+    feed_output = layouts['feed'].replace('{{ content }}', feed_items)
     for key in SITE_META:
-        output = output.replace('{{ ' + key + ' }}', SITE_META.get(key))
-        sitemap_item = sitemap_item.replace('{{ ' + key + ' }}',
-                                            SITE_META.get(key))
-        feed_item = feed_item.replace('{{ ' + key + ' }}', SITE_META.get(key))
+        feed_output = feed_output.replace(
+            '{{ ' + key + ' }}', SITE_META.get(key))
+    # TODO date of feed
+    write_file(FEED, feed_output)
 
-    # insert the page metadata into the templates
-    # exclude if not a string TODO sort out images in metadata
-    keys = [key for key in page_meta if type(page_meta[key]) == str]
-    for key in keys:
-        output = output.replace('{{ ' + key + ' }}', page_meta.get(key))
-        sitemap_item = (sitemap_item.replace('{{ ' + key + ' }}',
-                                             page_meta.get(key)))
-        feed_item = (feed_item.replace('{{ ' + key + ' }}',
-                                       page_meta.get(key)))
+    # generate simple 404 page
+    file_404 = layouts['file_404']
+    for key in SITE_META:
+        file_404 = file_404.replace('{{ ' + key + ' }}', SITE_META.get(key))
+    write_file(FILE_404, file_404)
 
-    # reformat internal links
-    output = output.replace('\index.md', '/')
-    feed_item = feed_item.replace('\index.md', '/')
 
-    # set output file name replacing .md with .html
-    output_file = Path(file.with_suffix('.html'))
-
-    # Write the output to the build directory
-    output_file.write_text(output, encoding='utf-8')
-
-    # Remove the markdown file
-    file.unlink()
-
-    print(output_file)
-
-    # Add the page to the sitemap
-    sitemap_items += sitemap_item
-    feed_items += feed_item
-
-# Generate the sitemap
-sitemap_output = layout_sitemap.replace('{{ content }}', sitemap_items)
-SITEMAP.write_text(sitemap_output, encoding='utf-8')
+### main section ###
+print('Site generation starting...')
 print()
-print('Sitemap written to', SITEMAP)
 
-# Generate the feed
-feed_output = layout_feed.replace('{{ content }}', feed_items)
-for key in SITE_META:
-    feed_output = feed_output.replace('{{ ' + key + ' }}', SITE_META.get(key))
-# TODO date of feed
-FEED.write_text(feed_output, encoding='utf-8')
-print('Feed written to', FEED)
+prepare_dirs()
+
+md_files = get_md_data()
+
+process_md_data(md_files)
 
 print()
 print('Site generation finished')

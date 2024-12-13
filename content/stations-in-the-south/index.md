@@ -41,6 +41,7 @@ Direct trains between these neighbouring provincial capitals are a surprisingly 
 <summary>
 Stations on the route from Málaga to Granada
 </summary>
+
 - [Málaga Maria Zambrano](_stations-in-the-south/malaga-maria-zambrano.md)
 - Antequera AV
 - Loja *(Granada province)* 
@@ -54,6 +55,7 @@ This is a scenic route through the mountains around Ronda down to the port of Al
 <summary>
 Stations on the route from Antequera Santa Ana to Algeciras
 </summary>
+
 - Antequera Santa Ana
 - Bobadilla 
 - Campillos
@@ -74,6 +76,7 @@ This line connects the centre of Málaga to the western Costa del Sol.
 <summary>
 Stations on line C-1
 </summary>
+
 - [Málaga Centro Alameda](_stations-in-the-south/malaga-centro-alameda.md)
 - [Málaga María Zambrano](_stations-in-the-south/malaga-maria-zambrano.md)
 - Victoria Kent
@@ -99,11 +102,13 @@ This route connects Málaga with the historic city of Córdoba, known for its st
 <summary>
 Stations on the route from Málaga to Córdoba
 </summary>
+
 - [Málaga María Zambrano](_stations-in-the-south/malaga-maria-zambrano.md)
 - Antequera Santa Ana
 - Puente Genil-Herrera
 - Córdoba Central
 </details>
+
 ## Málaga *Cercanías* Line C-2
 
 This line winds through the lower Guadalhorce valley, sharing the first part of the Málaga to Sevilla route. 
@@ -112,6 +117,7 @@ This line winds through the lower Guadalhorce valley, sharing the first part of 
 <summary>
 Stations on line C-2
 </summary>
+
 - [Málaga Centro Alameda](_stations-in-the-south/malaga-centro-alameda.md)
 - [Málaga María Zambrano](_stations-in-the-south/malaga-maria-zambrano.md)
 - Victoria Kent
@@ -129,6 +135,7 @@ Stations on line C-2
 <summary>
 Disused stations
 </summary>
+
 - Campanillas (old station)
 - Antequera Ciudad
 - Loja San Francisco *(Granada Province)*
@@ -140,6 +147,7 @@ Disused stations
 <summary>
 Stations on line L1
 </summary>
+
 - Atarazanas
 - Guadalmedina
 - El Perchel
@@ -161,6 +169,7 @@ Stations on line L1
 <summary>
 Stations on line L2
 </summary>
+
 - Guadalmedina
 - El Perchel
 - La Isla

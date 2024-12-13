@@ -24,7 +24,7 @@ If you use a feed reader you can follow this site's [feed](feed.xml) to keep up 
 
 ### Photography
 
-- [Flickr Photos](https://www.alangrantphoto.com/ "My Flickr Galleries"), my main photo galleries (mostly with photos of Ireland)
+- [Flickr Photos](alangrantphoto.com/ "My Flickr Galleries"), my main photo galleries (mostly with photos of Ireland)
     - [Flickr Walks](https://www.flickr.com/photos/alangrantphoto/collections/72157721520041495/ "Collection of hiking photos"), a collection of hiking photos
     - [Flickr Train Travel](https://www.flickr.com/photos/alangrantphoto/collections/72157721491275251/ "Collection of railway photos"), a collection of railway photography  
     - [Flickr Places](https://www.flickr.com/photos/alangrantphoto/collections/72157721518635925/ "Collection of travel photos"), travel photography en general 

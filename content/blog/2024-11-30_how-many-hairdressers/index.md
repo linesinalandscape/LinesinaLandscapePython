@@ -1,5 +1,5 @@
 ---
-feature: y
+draft: True
 description: Thoughts on mapping local pointsof interest in OpenStreetMap.
 image:
   alt: Screenshot from the CityStrides website, showing a map of GPS traces overlaid over the city of Malaga, with some statistics. Just over 25% of streets have been completed.

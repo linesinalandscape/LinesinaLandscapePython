@@ -1,17 +1,10 @@
 '''
 TODO
-- post titles
-- all date related stuff
+- date in blog articles
 - feed id
-- markdown2 in github
 - production permalinks
-- aria-current?
-- paths for feed
-- blog index page
 - OG images
 - reorganise images
-- validate html
-- check performance
 - tags?
 - image lazy loading, size?
 - 404 check
@@ -41,7 +34,7 @@ TEMPLATES = {
 }
 
 SITE_META = {
-    'site_url': 'http://localhost:8000/',
+    'site_url': 'test.linesinalandscape.com',
     'site_title': 'Lines in a Landscape',
     'site_author': 'Alan Grant',
     'site_description': 'Trails, trains, maps, Málaga, and more - a personal website'
@@ -90,10 +83,22 @@ def get_md_data():
 
         # Convert markdown to HTML and store metadata
         md_converted = markdown(md, extras=['metadata'])
-
-        # reformat internal links
-        file_data['content'] = str(md_converted).replace('\index.md', '/')
+        file_data['content'] = str(md_converted)
         file_data.update(md_converted.metadata)
+
+        # extract the title from the first # line of the markdown file
+        if 'title' not in file_data:
+            lines = md.split('\n')
+            for line in lines:
+                if line.startswith('# '):
+                    file_data['title'] = line[2:]
+                    break
+        
+        # check for draft status (any value excep False treated as draft)
+        if 'draft' in file_data and file_data['draft'] != 'False':
+            file_data['is_public'] = False
+        else:
+            file_data['is_public'] = True
 
         # various metadata fields not already in the markdown file
         # set the final url for the page
@@ -103,13 +108,8 @@ def get_md_data():
         permalink = permalink.replace('./', '')  # for root index page
         file_data['permalink'] = permalink
 
-        # extract the title from the first # line of the markdown file
-        if 'title' not in file_data:
-            lines = md.split('\n')
-            for line in lines:
-                if line.startswith('# '):
-                    file_data['title'] = line[2:]
-                    break
+        # reformat internal links
+        file_data['content'] = file_data['content'].replace('\index.md', '/')
 
         # set dates for sorting and feed
         if 'date' not in file_data:
@@ -155,27 +155,40 @@ def process_md_data(md_files):
     layouts = load_layouts()
 
     for md_data in md_files:
+        sitemap_item = ''
+        index_item = ''
+        feed_item = ''
+       
         html = layouts['html']
-        sitemap_item = layouts['sitemap_item']
-        if md_data['is_post']:
+        if md_data['is_public']:
+            sitemap_item = layouts['sitemap_item']
+        if md_data['is_post'] and md_data['is_public']:
             index_item = layouts['index_item']
             feed_item = layouts['feed_item']
-        else:
-            index_item = ''
-            feed_item = ''
-
+        
         # insert the page metadata into the templates
         # exclude if not a string for now
         keys = [key for key in md_data if type(md_data[key]) == str]
         for key in keys:
             html = html.replace('{{ ' + key + ' }}', md_data.get(key))
-            sitemap_item = (sitemap_item.replace('{{ ' + key + ' }}',
-                                                 md_data.get(key)))
-            if md_data['is_post']:
+            if md_data['is_public']:
+                sitemap_item = (sitemap_item.replace('{{ ' + key + ' }}',
+                                                     md_data.get(key)))
+            if md_data['is_post'] and md_data['is_public']:
                 index_item = (index_item.replace('{{ ' + key + ' }}',
                                                  md_data.get(key)))
                 feed_item = (feed_item.replace('{{ ' + key + ' }}',
                                                md_data.get(key)))
+
+        # set aria-current on navigation link
+        nav_link = md_data.get('permalink').removeprefix(
+            SITE_META.get('site_url'))
+        nav_link = '/' + nav_link.split('/', 1)[0]
+        if nav_link != '/':
+            nav_link += '/'
+        nav_link_html = f'<a href="{nav_link}">'
+        nav_link_html_new = f'<a href="{nav_link}" aria-current="page">'
+        html = html.replace(nav_link_html, nav_link_html_new)
 
         # set output file name replacing .md with .html
         output_file = Path(md_data['path'].with_suffix('.html'))

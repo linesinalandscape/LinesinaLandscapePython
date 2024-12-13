@@ -81,7 +81,7 @@ def get_md_data():
         md = file.read_text(encoding='utf-8')
 
         # Convert markdown to HTML and store metadata
-        md_converted = markdown(md, extras=['metadata'])
+        md_converted = markdown(md, extras=['metadata', 'markdown-in-html'])
         file_data['content'] = str(md_converted)
         file_data.update(md_converted.metadata)
 

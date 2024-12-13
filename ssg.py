@@ -7,7 +7,6 @@ TODO
 - production permalinks
 - aria-current?
 - paths for feed
-- add feed
 - blog index page
 - OG images
 - reorganise images
@@ -22,6 +21,7 @@ TODO
 from shutil import copytree, rmtree
 from pathlib import Path
 from markdown2 import markdown
+import datetime as dt
 
 SOURCE_DIR = Path('content')
 BUILD_DIR = Path('build')
@@ -34,6 +34,7 @@ TEMPLATES = {
     'html': Path('templates/default.html'),
     'sitemap': Path('templates/sitemap.xml'),
     'sitemap_item': Path('templates/sitemap_item.xml'),
+    'index_item': Path('templates/index_item.html'),
     'feed': Path('templates/feed.xml'),
     'feed_item': Path('templates/feed_item.xml'),
     'file_404': Path('templates/404.html')
@@ -89,12 +90,12 @@ def get_md_data():
 
         # Convert markdown to HTML and store metadata
         md_converted = markdown(md, extras=['metadata'])
-        
+
         # reformat internal links
         file_data['content'] = str(md_converted).replace('\index.md', '/')
         file_data.update(md_converted.metadata)
 
-        ## various metadata fields not already in the markdown file
+        # various metadata fields not already in the markdown file
         # set the final url for the page
         permalink = (SITE_META.get('site_url')
                      + str(file.relative_to(BUILD_DIR).parent) + '/')
@@ -109,25 +110,29 @@ def get_md_data():
                 if line.startswith('# '):
                     file_data['title'] = line[2:]
                     break
-                
-            
+
         # set dates for sorting and feed
         if 'date' not in file_data:
             if file_data['is_post']:
                 # extract date from containing directory name
                 file_data['date'] = file_data['path'].parts[-2].split('_')[0]
-                file_data['date_feed'] = file_data['date'] + 'T00:00:00Z'
             else:
-                file_data['date'] = '1970-01-01' # TODO
+                # use file modified timestamp
+                timestamp = dt.datetime.fromtimestamp(file.stat().st_mtime)
+                file_data['date'] = f'{timestamp:%Y-%m-%d}'
 
         if 'date_modified' in file_data:
             file_data['date_sort'] = file_data['date_modified']
+            file_data['date_feed'] = file_data['date'] + 'T00:00:00Z'
             file_data['date_feed_updated'] = (file_data['date_modified']
-                                                + 'T00:00:00Z')
+                                              + 'T00:00:00Z')
+            file_data['date_text'] = (f"Published {file_data['date']}"
+                                      + f"; updated {file_data['date_modified']}")
         else:
             file_data['date_sort'] = file_data['date']
-            file_data['date_feed_updated'] = (file_data['date']
-                                                + 'T00:00:00Z')
+            file_data['date_feed'] = file_data['date'] + 'T00:00:00Z'
+            file_data['date_feed_updated'] = file_data['date_feed']
+            file_data['date_text'] = f"Published {file_data['date']}"
 
         md_data.append(file_data)
 
@@ -144,6 +149,7 @@ def process_md_data(md_files):
     ''' Process the markdown data '''
 
     sitemap_items = ''
+    index_items = ''
     feed_items = ''
 
     layouts = load_layouts()
@@ -152,10 +158,12 @@ def process_md_data(md_files):
         html = layouts['html']
         sitemap_item = layouts['sitemap_item']
         if md_data['is_post']:
+            index_item = layouts['index_item']
             feed_item = layouts['feed_item']
         else:
-            feed_item = ''     
-        
+            index_item = ''
+            feed_item = ''
+
         # insert the page metadata into the templates
         # exclude if not a string for now
         keys = [key for key in md_data if type(md_data[key]) == str]
@@ -164,6 +172,8 @@ def process_md_data(md_files):
             sitemap_item = (sitemap_item.replace('{{ ' + key + ' }}',
                                                  md_data.get(key)))
             if md_data['is_post']:
+                index_item = (index_item.replace('{{ ' + key + ' }}',
+                                                 md_data.get(key)))
                 feed_item = (feed_item.replace('{{ ' + key + ' }}',
                                                md_data.get(key)))
 
@@ -175,24 +185,24 @@ def process_md_data(md_files):
 
         # Add the page to the sitemap
         sitemap_items += sitemap_item
+        index_items += index_item
         feed_items += feed_item
-
-    # generate the blog index page
-    post_index_text = 'placeholder for post index'
-    content = POST_INDEX.read_text(encoding='utf-8')
-    content = content.replace('{{ post_index }}', post_index_text)
-    write_file(POST_INDEX, content)
 
     # Generate the sitemap
     sitemap_output = layouts['sitemap'].replace('{{ content }}', sitemap_items)
     write_file(SITEMAP, sitemap_output)
+
+    # generate the blog index page
+    content = POST_INDEX.read_text(encoding='utf-8')
+    content = content.replace('{{ post_index }}', index_items)
+    write_file(POST_INDEX, content)
 
     # Generate the feed
     feed_output = layouts['feed'].replace('{{ content }}', feed_items)
     for key in SITE_META:
         feed_output = feed_output.replace(
             '{{ ' + key + ' }}', SITE_META.get(key))
-    feed_output = feed_output.replace('{{ date_feed }}', 
+    feed_output = feed_output.replace('{{ date_feed }}',
                                       md_files[0].get('date_feed_updated'))
     write_file(FEED, feed_output)
 

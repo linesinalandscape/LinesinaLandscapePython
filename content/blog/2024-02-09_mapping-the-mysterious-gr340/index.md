@@ -27,7 +27,7 @@ And yet... wherever I crossed the proposed route, I found that the trail was rea
 
 I like to ensure that full details of any trails that I hike are in OpenStreetMap. (For those that don't know, OpenStreetMap or OSM is a geographic database that the public can freely contribute to and use. Its data underlies many well-known websites and applications). Over the last few days I have been adding as much detail as I can of "my" three-and-a-bit stages. The rest will have to wait until I have the chance to walk further stages, or some other hiker-mapper gets involved.
 
-This is how it looks on Waymarked Trails, a website that visualises recreational trails mapped in OSM. You can see for yourself at [this link](https://hiking.waymarkedtrails.org/#route?id=17152984&type=relation&map=11.0/36.9105/-4.7105).
+This is how it looks on Waymarked Trails, a website that visualises recreational trails mapped in OSM. You can see for yourself at [this link](https://hiking.waymarkedtrails.org/#route?id=17152984&amp;type=relation&amp;map=11.0/36.9105/-4.7105).
 ![Screenshot from waymarkedtrails.org showing some sections of the GR 340 on the map](/assets/images/20240209-screenshot-GR340-waymarkedtrails.jpg)
 
 So much for the mapping. As for the experience of walking the trail, I will say more about that in future posts.

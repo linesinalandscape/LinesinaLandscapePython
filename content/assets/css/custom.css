@@ -47,6 +47,7 @@ h2 {
   font-size: 2rem;
   margin-top: 2rem;
 }
+
 h3 {
   font-size: 1.6rem;
   margin-top: 1.6rem;
@@ -94,8 +95,9 @@ body > header {
 
 body > footer {
     padding: 1rem 0rem 1rem 0rem; /* less padding than the original  */
-    margin-top: 1rem;
+    margin-top: 0rem;
     font-size: 1rem;
+    border: none
 }
 
 body > footer p {
@@ -134,10 +136,11 @@ header > nav a {
     padding: 0.1rem 0.5rem;
 }
 
-/* remove border and padding from articles on mobile */
+/* remove padding and side borders from articles on mobile */
 @media only screen and (max-width: 720px) {
     article {
-      border: none;
+      border-left: none;
+      border-right: none;
       padding: 0;
     }
 

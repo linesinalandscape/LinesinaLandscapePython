@@ -1,4 +1,4 @@
 <url>
 <loc>{{ permalink }}</loc>
-<lastmod>{{ date_final }}</lastmod>
+<lastmod>{{ date_sort }}</lastmod>
 </url>

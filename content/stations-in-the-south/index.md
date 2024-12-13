@@ -94,6 +94,7 @@ Stations on line C-1
 - Los Boliches
 - Fuengirola
 </details>
+
 ## Málaga to Córdoba
 
 This route connects Málaga with the historic city of Córdoba, known for its stunning architecture and cultural heritage.

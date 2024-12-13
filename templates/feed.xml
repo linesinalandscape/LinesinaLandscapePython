@@ -7,5 +7,6 @@
 <title type="html">{{ site_title }}</title>
 <subtitle>{{ site_description }}</subtitle>
 <author><name>{{ site_author }}</name></author>
+<updated>{{ date_feed }}</updated>
 {{ content }}
 </feed>

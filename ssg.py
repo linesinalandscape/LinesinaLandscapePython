@@ -89,10 +89,12 @@ def get_md_data():
 
         # Convert markdown to HTML and store metadata
         md_converted = markdown(md, extras=['metadata'])
-        file_data['content'] = str(md_converted)
+        
+        # reformat internal links
+        file_data['content'] = str(md_converted).replace('\index.md', '/')
         file_data.update(md_converted.metadata)
 
-        # various metadata fields not already in the markdown file
+        ## various metadata fields not already in the markdown file
         # set the final url for the page
         permalink = (SITE_META.get('site_url')
                      + str(file.relative_to(BUILD_DIR).parent) + '/')
@@ -100,14 +102,40 @@ def get_md_data():
         permalink = permalink.replace('./', '')  # for root index page
         file_data['permalink'] = permalink
 
-        # set date for the page in priority order:
-        # TODO FIX THIS
-        file_data['date_final'] = '2024-12-01'
+        # extract the title from the first # line of the markdown file
+        if 'title' not in file_data:
+            lines = md.split('\n')
+            for line in lines:
+                if line.startswith('# '):
+                    file_data['title'] = line[2:]
+                    break
+                
+            
+        # set dates for sorting and feed
+        if 'date' not in file_data:
+            if file_data['is_post']:
+                # extract date from containing directory name
+                file_data['date'] = file_data['path'].parts[-2].split('_')[0]
+                file_data['date_feed'] = file_data['date'] + 'T00:00:00Z'
+            else:
+                file_data['date'] = '1970-01-01' # TODO
+
+        if 'date_modified' in file_data:
+            file_data['date_sort'] = file_data['date_modified']
+            file_data['date_feed_updated'] = (file_data['date_modified']
+                                                + 'T00:00:00Z')
+        else:
+            file_data['date_sort'] = file_data['date']
+            file_data['date_feed_updated'] = (file_data['date']
+                                                + 'T00:00:00Z')
 
         md_data.append(file_data)
 
         # Remove the markdown file
         file.unlink()
+
+    # Sort in reverse date order
+    md_data.sort(key=lambda x: x.get('date_sort'), reverse=True)
 
     return md_data
 
@@ -121,43 +149,39 @@ def process_md_data(md_files):
     layouts = load_layouts()
 
     for md_data in md_files:
-        output = layouts['html']
+        html = layouts['html']
         sitemap_item = layouts['sitemap_item']
         if md_data['is_post']:
             feed_item = layouts['feed_item']
         else:
-            feed_item = ''
-
+            feed_item = ''     
+        
         # insert the page metadata into the templates
         # exclude if not a string for now
         keys = [key for key in md_data if type(md_data[key]) == str]
         for key in keys:
-            output = output.replace('{{ ' + key + ' }}', md_data.get(key))
+            html = html.replace('{{ ' + key + ' }}', md_data.get(key))
             sitemap_item = (sitemap_item.replace('{{ ' + key + ' }}',
                                                  md_data.get(key)))
             if md_data['is_post']:
                 feed_item = (feed_item.replace('{{ ' + key + ' }}',
                                                md_data.get(key)))
 
-        # reformat internal links
-        output = output.replace('\index.md', '/')
-        feed_item = feed_item.replace('\index.md', '/')
-
         # set output file name replacing .md with .html
         output_file = Path(md_data['path'].with_suffix('.html'))
 
         # Write the output to the build directory
-        write_file(output_file, output)
+        write_file(output_file, html)
 
         # Add the page to the sitemap
         sitemap_items += sitemap_item
         feed_items += feed_item
 
     # generate the blog index page
-    # post_index_text = 'placeholder for post index'
-    # content = POST_INDEX.read_text(encoding='utf-8')
-    # content = content.replace('{{ post_index }}', post_index_text)
-    # POST_INDEX.write_text(content, encoding='utf-8')
+    post_index_text = 'placeholder for post index'
+    content = POST_INDEX.read_text(encoding='utf-8')
+    content = content.replace('{{ post_index }}', post_index_text)
+    write_file(POST_INDEX, content)
 
     # Generate the sitemap
     sitemap_output = layouts['sitemap'].replace('{{ content }}', sitemap_items)
@@ -168,7 +192,8 @@ def process_md_data(md_files):
     for key in SITE_META:
         feed_output = feed_output.replace(
             '{{ ' + key + ' }}', SITE_META.get(key))
-    # TODO date of feed
+    feed_output = feed_output.replace('{{ date_feed }}', 
+                                      md_files[0].get('date_feed_updated'))
     write_file(FEED, feed_output)
 
     # generate simple 404 page

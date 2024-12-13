@@ -1,8 +1,8 @@
 <entry>
 <title type="html">{{ title }}</title>
 <link href="{{ permalink }}" rel="alternate" type="text/html" title="{{ title }}" />
-<published>{{ date_final }}</published>
-<updated>2024-05-14T00:00:00+01:00</updated>
+<published>{{ date_feed }}</published>
+<updated>{{ date_feed_updated }}</updated>
 <id>{{ permalink }}</id>
 <content type="html">
 <![CDATA[{{ content }}]]>

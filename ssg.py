@@ -1,7 +1,6 @@
 '''
 TODO
 - date in blog articles
-- feed id
 - production permalinks
 - OG images
 - reorganise images

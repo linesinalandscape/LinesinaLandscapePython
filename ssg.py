@@ -33,7 +33,7 @@ TEMPLATES = {
 }
 
 SITE_META = {
-    'site_url': 'test.linesinalandscape.com',
+    'site_url': 'https://test.linesinalandscape.com/',
     'site_title': 'Lines in a Landscape',
     'site_author': 'Alan Grant',
     'site_description': 'Trails, trains, maps, Málaga, and more - a personal website'

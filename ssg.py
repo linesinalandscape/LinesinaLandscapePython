@@ -1,13 +1,10 @@
 '''
 TODO
-- date in blog articles
-- production permalinks
+- remove date from blog url
+- images with page?
 - OG images
-- reorganise images
 - tags?
-- image lazy loading, size?
-- 404 check
-- blogroll redirect check
+- image lazy loading, size, in metadata, generate small?
 '''
 
 from shutil import copytree, rmtree
@@ -27,7 +24,7 @@ TEMPLATES = {
     'sitemap': Path('templates/sitemap.xml'),
     'sitemap_item': Path('templates/sitemap_item.xml'),
     'index_item': Path('templates/index_item.html'),
-    'article': Path('templates/article.html')
+    'article': Path('templates/article.html'),
     'feed': Path('templates/feed.xml'),
     'feed_item': Path('templates/feed_item.xml'),
     'file_404': Path('templates/404.html')
@@ -93,7 +90,7 @@ def get_md_data():
                 if line.startswith('# '):
                     file_data['title'] = line[2:]
                     break
-        
+
         # check for draft status (any value except False treated as draft)
         if 'draft' in file_data and file_data['draft'] != 'False':
             file_data['is_public'] = False
@@ -110,10 +107,14 @@ def get_md_data():
 
         # reformat internal links
         file_data['content'] = file_data['content'].replace('\index.md', '/')
+
         # set layout
-        if 'layout' not in file_data and file_data['is_post']:
-            file_data['layout'] = 'article'p
-           
+        if 'layout' not in file_data:
+            if file_data['is_post']:
+                file_data['layout'] = 'article'
+            else:
+                file_data['layout'] = None
+
         # set dates for sorting and feed
         if 'date' not in file_data:
             if file_data['is_post']:
@@ -130,7 +131,7 @@ def get_md_data():
             file_data['date_feed_updated'] = (file_data['date_modified']
                                               + 'T00:00:00Z')
             file_data['date_text'] = (f"Published {file_data['date']}"
-                                      + f"; updated {file_data['date_modified']}")
+                                      + f"; last updated {file_data['date_modified']}")
         else:
             file_data['date_sort'] = file_data['date']
             file_data['date_feed'] = file_data['date'] + 'T00:00:00Z'
@@ -161,16 +162,20 @@ def process_md_data(md_files):
         sitemap_item = ''
         index_item = ''
         feed_item = ''
-       
+
+        # initialise layouts
         html = layouts['html']
         html_inner = md_data['layout']
+        if md_data['layout'] is not None:
+            html_inner = layouts[md_data['layout']]
+            html = html.replace('{{ content }}', html_inner)
+
         if md_data['is_public']:
             sitemap_item = layouts['sitemap_item']
         if md_data['is_post'] and md_data['is_public']:
             index_item = layouts['index_item']
             feed_item = layouts['feed_item']
-        
-       
+
         # insert the page metadata into the templates
         # exclude if not a string for now
         keys = [key for key in md_data if type(md_data[key]) == str]

@@ -94,7 +94,7 @@ def get_md_data():
                     file_data['title'] = line[2:]
                     break
         
-        # check for draft status (any value excep False treated as draft)
+        # check for draft status (any value except False treated as draft)
         if 'draft' in file_data and file_data['draft'] != 'False':
             file_data['is_public'] = False
         else:
@@ -110,7 +110,10 @@ def get_md_data():
 
         # reformat internal links
         file_data['content'] = file_data['content'].replace('\index.md', '/')
-
+        # set layout
+        if 'layout' not in file_data and file_data['is_post']:
+            file_data['layout'] = 'article'p
+           
         # set dates for sorting and feed
         if 'date' not in file_data:
             if file_data['is_post']:
@@ -160,12 +163,14 @@ def process_md_data(md_files):
         feed_item = ''
        
         html = layouts['html']
+        html_inner = md_data['layout']
         if md_data['is_public']:
             sitemap_item = layouts['sitemap_item']
         if md_data['is_post'] and md_data['is_public']:
             index_item = layouts['index_item']
             feed_item = layouts['feed_item']
         
+       
         # insert the page metadata into the templates
         # exclude if not a string for now
         keys = [key for key in md_data if type(md_data[key]) == str]

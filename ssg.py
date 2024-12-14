@@ -27,6 +27,7 @@ TEMPLATES = {
     'sitemap': Path('templates/sitemap.xml'),
     'sitemap_item': Path('templates/sitemap_item.xml'),
     'index_item': Path('templates/index_item.html'),
+    'article': Path('templates/article.html')
     'feed': Path('templates/feed.xml'),
     'feed_item': Path('templates/feed_item.xml'),
     'file_404': Path('templates/404.html')

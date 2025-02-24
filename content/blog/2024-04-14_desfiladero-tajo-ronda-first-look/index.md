@@ -1,15 +1,6 @@
 ---
-feature: y
-description: On the day Ronda's Desfiladero de Tajo walkway opened to the public, I was one of the first visitors. 
-image:
-  alt: View of the Puente Nuevo in Ronda from below. A tall arched stone bridge with cliffs on either side, and greenery and flowers in the foreground.
-  path: https://live.staticflickr.com/65535/53677920831_935df9bf62_z.jpg
-  width: 640
-  height: 427
-image-small:
-  path: https://live.staticflickr.com/65535/53677920831_935df9bf62_n.jpg
-  width: 320
-  height: 213
+date: 2024-04-14
+description: On the day Ronda's Desfiladero de Tajo walkway opened to the public, I was one of the first visitors.  first look at Ronda's Desfiladero del Tajo walkway
 ---
 
 # A first look at Ronda's Desfiladero del Tajo walkway

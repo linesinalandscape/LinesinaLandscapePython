@@ -1,21 +1,12 @@
 ---
-feature: y
+date: 2024-04-05
 description: Memories of my first trip on the Belgrade to Bar railway, 20 years ago this week, and reflections on the subsequent decline in Belgrade's international rail connections.
-image:
-  alt: A train ticket and reservation from 2004, for a journey from Belgrade to Kolašin
-  path: /assets/images/20240405-train-ticket-belgrade-kolasin.jpg
-  width: 640
-  height: 472
-image-small:
-  path: /assets/images/small/20240405-train-ticket-belgrade-kolasin.jpg
-  width: 320
-  height: 236
 ---
 # 20 years ago on the Belgrade to Bar Railway
 
 Twenty years ago today, I bought a ticket to travel the following day, from the main station in Belgrade to Kolašin in northern Montenegro. It would be my first trip on part of the Belgrade to Bar railway.
 
-<img alt="A train ticket and reservation from 2004, for a journey from Belgrade to Kolašin" src="/assets/images/20240405-train-ticket-belgrade-kolasin.jpg" width="640" height="472">
+![A train ticket and reservation from 2004, for a journey from Belgrade to Kolašin](train-ticket-belgrade-kolasin.jpg)
 
 In 2004 Serbia and Montenegro was still notionally unified, but operated in many respects as two separate countries. As you can see, tickets were still issued in the name of "Jugoslovenské železnice" (Yugoslav Railways), but that wouldn't last much longer. The reservation slip shows a price of 15 million dinars: it must have been printed many years before, in the era of hyperinflation. By the time of my visit the redenominated dinar had returned to a more sensible value, and old 500 million dinar notes were sold as souvenirs to the relatively few tourists who visited Belgrade.
 
@@ -26,7 +17,12 @@ I took some further short trips on the Montenegrin section of the line over the 
 ## Thoughts on timetables
 
 This photo of the Belgrade departures timetable was taken in autumn 2006, but the Belgrade to Bar schedule hadn't changed much since my earlier visit. By this time Serbia and Montenegro had definitively separated, and the Belgrade to Bar route had become an international journey, complete with border checkpoints.
-<a href="/assets/images/20240405-timetable-belgrade-2005-large.jpg" title="Departures timetable for Belgrade train station 2005-2006 - click through for larger version"><img loading="lazy" alt="Departures timetable for Belgrade train station 2005-2006, on the traditional yellow background, showing a wide selection of international trains." src="/assets/images/20240405-timetable-belgrade-2005.jpg" width="563" height="800"></a>
+
+<div>
+<a href="timetable-belgrade-2005-large.jpg" title="Departures timetable for Belgrade train station 2005-2006 - click through for larger version"><img alt="Departures timetable for Belgrade train station 2005-2006, on the traditional yellow background, showing a wide selection of international trains." src="timetable-belgrade-2005.jpg"></a>
+</div>
+
+
 
 At this time there were two daytime and two overnight trains between Belgrade and Bar throughout the year, and two more slow trains to Bijelo Polje in northern Montenegro. I believe that in 2024 there is just one year-round night train, plus one day train in summer.
 

@@ -1,21 +1,12 @@
 ---
-feature: y
+date: 2024-05-10
 description: Yesterday I passed the 25% completion landmark for walking and running streets in the city of Malaga, as measured by CityStrides.
-image:
-  alt: Screenshot from the CityStrides website, showing a map of GPS traces overlaid over the city of Malaga, with some statistics. Just over 25% of streets have been completed.
-  path: /assets/images/20240510-citystrides-malaga-25pc.jpg
-  width: 640
-  height: 511
-image-small:
-  path: /assets/images/small/20240510-citystrides-malaga-25pc.jpg
-  width: 320
-  height: 256
 ---
 # Walking Malaga's streets: one quarter completed
 
-Today I noticed that according to the [CityStrides website](https://citystrides.com/), I have walked or run 25% of the named streets in the municipality of Malaga. To be precise, I have covered X streets, with Y remaining. (The remaining streets are those that I have never visited at all, plus those that I have only partially completed). 
+Today I noticed that according to the [CityStrides website](https://citystrides.com/), I have walked or run 25% of the named streets in the municipality of Malaga. To be precise, I have covered 1155 streets, out of a total of 4606. (The remaining streets are those that I have never visited at all, plus those that I have only partially completed). 
 
-<img alt="Screenshot from the CityStrides website, showing a map of GPS traces overlaid over the city of Malaga, with some statistics. Just over 25% of streets have been completed." src="/assets/images/20240510-citystrides-malaga-25pc.jpg" width="640" height="511">
+![Screenshot from the CityStrides website, showing a map of GPS traces overlaid over the city of Malaga, with some statistics. Just over 25% of streets have been completed](citystrides-malaga-25pc.jpg)
 
 I am a relatively recent convert to CityStrides, and to the "Every Single Street" or "Run Every Street" concept. I first became curious about it towards the end of last year, and uploaded all my past GPS traces. I am certainly not a hardcore member of the community, some of whom would probably be amused that anyone would publicise a paltry 25% completion rate. For one thing, I mainly walk, with only the occasional run. And I don't usually set out with racking up new streets as my main aim (although my natural curiosity does lead to me seeking out neighbourhoods I have never visited).
 

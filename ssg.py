@@ -271,9 +271,12 @@ def process_images():
                     im.thumbnail((150, 150))
                     im.save(img_small)
 
+                    # set src attribute to file name of medium image
+                    img['src'] = img_medium.name
+                    
                     # set srcset attribute
-                    img['src'] = img_medium
-                    img['srcset'] = (f'{img_small} 150w, {img_medium} 720w, {img_path} {img["width"]}w')
+                    # TODO allow for original smaller than medium
+                    img['srcset'] = (f'{img_small.name} 150w, {img_medium.name} 720w, {img_path.name} {img["width"]}w')
                     img['sizes'] = '(max-width: 720px) 96vw, 720px'
 
         

@@ -11,6 +11,8 @@ from shutil import copytree, rmtree
 from pathlib import Path
 from markdown2 import markdown
 import datetime as dt
+from bs4 import BeautifulSoup
+from PIL import Image
 
 SOURCE_DIR = Path('content')
 BUILD_DIR = Path('build')
@@ -165,7 +167,6 @@ def process_md_data(md_files):
 
         # initialise layouts
         html = layouts['html']
-        html_inner = md_data['layout']
         if md_data['layout'] is not None:
             html_inner = layouts[md_data['layout']]
             html = html.replace('{{ content }}', html_inner)
@@ -236,6 +237,51 @@ def process_md_data(md_files):
     write_file(FILE_404, file_404)
 
 
+def process_images():
+    ''' Process images in HTML files '''
+    for file in BUILD_DIR.rglob('*.html'):
+        # parse file with beautifulsoup and find image elements
+        with open(file, 'r', encoding='utf-8') as f:
+            soup = BeautifulSoup(f, 'html.parser')
+
+        # find all img elements within the main element
+        images = soup.select('main img')
+        for img_index, img in enumerate(images):
+            # add lazy loading for all except 1st image
+            if img_index > 0:
+               img['loading'] = 'lazy'
+            
+            # get full path to img['src] starting from file
+            # TODO make this less fragile
+            img_path = file.parent / img['src']          
+            if img_path.exists():
+                with Image.open(img_path) as im:
+                    # set width and height attributes
+                    img['width'], img['height'] = im.size
+
+                    # generate medium and small images
+                    img_medium = img_path.with_name(
+                        img_path.stem + '_medium' + img_path.suffix)
+                    img_small = img_path.with_name(
+                        img_path.stem + '_small' + img_path.suffix)
+                    if im.size > (720, 540):
+                        im.thumbnail((720, 540))
+                    im.save(img_medium)
+                        
+                    im.thumbnail((150, 150))
+                    im.save(img_small)
+
+                    # set srcset attribute
+                    img['src'] = img_medium
+                    img['srcset'] = (f'{img_small} 150w, {img_medium} 720w, {img_path} {img["width"]}w')
+                    img['sizes'] = '(max-width: 720px) 96vw, 720px'
+
+        
+        # write the modified HTML back to the file
+        with open(file, 'w', encoding='utf-8') as f:
+            f.write(str(soup))
+
+
 ### main section ###
 print('Site generation starting...')
 print()
@@ -245,6 +291,8 @@ prepare_dirs()
 md_files = get_md_data()
 
 process_md_data(md_files)
+
+process_images()
 
 print()
 print('Site generation finished')
